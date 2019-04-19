@@ -9,6 +9,27 @@ class Match {
   public static def main(args:Rail[String]) {
 	val SIZE:Long = 127;
 	
+	/*
+	 * Arguments:
+	 * --------------------------------------------
+	 * fastaOne: fasta file containing the first sequence
+	 * fastaTwo: fasta file containing the second sequence
+	 * (fasta files are found in ./fasta directory)
+	 * 
+	 * blosum: 	file containing the Substitution Matrix
+	 * (blosum files are found in ./matrices directory)
+	 * 
+	 * gapA:	gap opening penalty
+	 * gapB:	gap extention penalty
+	 */
+	if(args.size == 5){
+		val fastaOne:String = args(0);
+		val fastaTwo:String = args(1);
+		val blosum:String = args(2);
+		val gapA:String = args(3);
+		val gapB:String = args(4);
+	}
+	
 	// 1D Rail to store the raw (in chars) Substitution Matrix
     val acids:Rail[Char] = new Rail[Char](SIZE, '0'); 
     Console.OUT.printf("Acid char rail size is %d\n", acids.size);
