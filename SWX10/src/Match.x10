@@ -3,6 +3,7 @@ import x10.io.Reader;
 import x10.io.File;
 import x10.lang.Int;
 import x10.array.Array_2;
+import x10.util.Timer;
 
 class Match {
   public static def main(args:Rail[String]) {
@@ -15,7 +16,11 @@ class Match {
     
     val inputMatrixFileName = "matrices/BLOSUM62";
     
+    val startTime: Long = Timer.nanoTime();
     parseMatrixFile(inputMatrixFileName, acids, subMatrix );
+    val endTime: Long = Timer.nanoTime();
+    
+    Console.OUT.println("Time elapsed loading matrix : " + (endTime-startTime)/1000 + " microsecs");
     
     Console.OUT.print("Acid rail non 0 values : ");
     for (acid in acids) {
