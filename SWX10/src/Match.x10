@@ -22,12 +22,22 @@ class Match {
 	 * gapA:	gap opening penalty
 	 * gapB:	gap extention penalty
 	 */
+	
+	val fastaOne:String, fastaTwo:String, blosum:String, gapA:String, gapB:String;
+	
 	if(args.size == 5){
-		val fastaOne:String = args(0);
-		val fastaTwo:String = args(1);
-		val blosum:String = args(2);
-		val gapA:String = args(3);
-		val gapB:String = args(4);
+		fastaOne = args(0);
+		fastaTwo = args(1);
+		blosum = args(2);
+		gapA = args(3);
+		gapB = args(4);
+	}
+	else {
+		fastaOne = "AF043946.1";
+		fastaTwo = "AF043947.1";
+		blosum = "BLOSUM62";
+		gapA = "10";
+		gapB = "5";
 	}
 	
 	// 1D Rail to store the raw (in chars) Substitution Matrix
