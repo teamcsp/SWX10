@@ -47,7 +47,7 @@ class Match {
     // 2D Array for Substitution Matrix
     val subMatrix: Array_2[Int] = new Array_2[Int](SIZE, SIZE);
     
-    val inputMatrixFileName = "matrices/BLOSUM62";
+    val inputMatrixFileName = "matrices/" + blosum;
     
     // Parsing the Matrix file
     val startTime: Long = Timer.nanoTime();
@@ -65,7 +65,7 @@ class Match {
     Console.OUT.println("Test sub matrix for subMatrix[M][B] expects -3; From matrix = " + subMatrix('M'.ord(),'B'.ord()));
     Console.OUT.println("Test sub matrix for subMatrix[B][B] expects 4; From matrix = " + subMatrix('B'.ord(),'B'.ord()));
     Console.OUT.println("Test sub matrix for subMatrix[Z][G] expects -2; From matrix = " + subMatrix('Z'.ord(),'G'.ord()));
-
+  
   }
   
   // Parses file with inputMatrixFileName, and stores the result into acids and subMatrix
@@ -92,15 +92,21 @@ class Match {
   // Parses line. Results is stored in acids and subMatrix
   private static def parseLine(line:String, acids:Rail[Char], HEAD_PARSED:Boolean, subMatrix: Array_2[Int]):void {
 	var splitedStrings:Rail[String]; 
+	
+	// Spliting the string using spaces
 	if (HEAD_PARSED == Boolean.FALSE) {
+		// Header elements are seperated by double-spaces
+		// i.e "A  R  N  D  .. "
 		splitedStrings = line.split("  ");
 	} else {
 		splitedStrings = line.split(" ");
 	}
 	
-    //Console.OUT.println(splitedStrings);
+	
     var acid: Char = 0 as Char; 
     var extraCount: Int  = 0 as Int;
+    
+    // Processing each element of the splited string
     for (var i:Long=0;i < splitedStrings.size; i++)
     {
     	if (HEAD_PARSED == Boolean.FALSE) {
@@ -112,7 +118,7 @@ class Match {
     		}
     		if (i == 0) {
     			acid = splitedStrings(i)(0 as Int);
-    			//Console.OUT.println("Current Head is : " + acid + " ");
+    			// Console.OUT.println("Current Head is : " + acid + " ");
     		}
     		else {
     			val j: Int = i as Int - extraCount;
