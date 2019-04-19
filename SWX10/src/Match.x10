@@ -9,13 +9,16 @@ class Match {
   public static def main(args:Rail[String]) {
 	val SIZE:Long = 127;
 	
+	// 1D Rail to store the raw (in chars) Substitution Matrix
     val acids:Rail[Char] = new Rail[Char](SIZE, '0'); 
     Console.OUT.printf("Acid char rail size is %d\n", acids.size);
     
+    // 2D Array for Substitution Matrix
     val subMatrix: Array_2[Int] = new Array_2[Int](SIZE, SIZE);
     
     val inputMatrixFileName = "matrices/BLOSUM62";
     
+    // Parsing the Matrix file
     val startTime: Long = Timer.nanoTime();
     parseMatrixFile(inputMatrixFileName, acids, subMatrix );
     val endTime: Long = Timer.nanoTime();
@@ -33,7 +36,9 @@ class Match {
     Console.OUT.println("Test sub matrix for subMatrix[Z][G] expects -2; From matrix = " + subMatrix('Z'.ord(),'G'.ord()));
 
   }
-
+  
+  // Parses file with inputMatrixFileName, and stores the result into acids and subMatrix
+  // Designed for reading the substituition matrix file
   private static def parseMatrixFile(inputMatrixFileName: String, acids:Rail[Char], subMatrix: Array_2[Int]): void {
 	  val inputMatrix = new File(inputMatrixFileName);
 	  
@@ -41,6 +46,8 @@ class Match {
 	  var HEAD_PARSED:Boolean = Boolean.FALSE;
 
 	  for (line in i.lines()) {
+		  
+		  // Skip first few lines (i.e. lines starting with '#')
 		  if ( line.trim().charAt(0 as Int) != '#' && line != null ) {
 			  parseLine(line.trim(), acids, HEAD_PARSED, subMatrix);
 			  if (HEAD_PARSED == Boolean.FALSE){
@@ -51,6 +58,7 @@ class Match {
 	  }	    
   }
   
+  // Parses line. Results is stored in acids and subMatrix
   private static def parseLine(line:String, acids:Rail[Char], HEAD_PARSED:Boolean, subMatrix: Array_2[Int]):void {
 	var splitedStrings:Rail[String]; 
 	if (HEAD_PARSED == Boolean.FALSE) {
