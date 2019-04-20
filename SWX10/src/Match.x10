@@ -235,7 +235,8 @@ class Match {
 	  
 	  // Add each char from each line to the railBuilder
 	  for(line in fastaLines){
-		  for(var i:Int = (0 as Int); i<line.length(); i++ ){
+		  val trimmedLine = line.trim();
+		  for(var i:Int = (0 as Int); i<trimmedLine.length(); i++ ){
 			  railBuilder.add(line.charAt(i));	
 		  }
 	  }
