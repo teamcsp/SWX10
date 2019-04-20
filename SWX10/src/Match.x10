@@ -107,9 +107,7 @@ class Match {
     		
     		// Find the Max value
     		var max:Long = 0;
-    		if (i == 7 && j == 3) {
-    			Console.OUT.println("Match is " + match + "side is " + sideGap+ "top is " + topGap);
-    		}
+    		
     		if (match > sideGap) {
     			if (match > topGap) {
     				if ( match > 0 ) {
@@ -167,7 +165,8 @@ class Match {
     
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
-    Console.OUT.println("Test scorematrix[6][3]: " + scoringMatrix(6,3));
+    //Console.OUT.println("Test scorematrix[6][3]: " + scoringMatrix(6,3));
+    
     // TODO: Traceback
     Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
@@ -175,15 +174,15 @@ class Match {
     var matchI:String = ""; var matchJ:String = "";
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
-    	Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+    	//Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-    	Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
+    	//Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
     	matchI = stringA(tempI-1) + matchI;
     	matchJ = stringB(tempJ-1) + matchJ;
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
-    	Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
+    	//Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
     Console.OUT.println("Match I : " + matchI);
