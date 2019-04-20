@@ -102,8 +102,8 @@ class Match {
     		
     		// Compute the 3 required values
     		val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-    		val sideGap:Long = scoringMatrix(i-1, j) - gapPenalty;
-    		val topGap:Long = scoringMatrix(i, j-1) - gapPenalty;
+    		val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
+    		val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
     		
     		// Find the Max value
     		var max:Long = 0;
@@ -122,7 +122,7 @@ class Match {
     			} else {
     				if (topGap > 0) {
     					max = topGap;
-    					parent2D(i,j) = Pair(i, j-1);
+    					parent2D(i,j) = Pair(i-1, j);
     				}
     				else {
     					max = 0;
@@ -131,7 +131,7 @@ class Match {
     		} else if (sideGap > topGap) {
     			if (sideGap > 0) {
     				max = sideGap;
-    				parent2D(i,j) = Pair(i-1, j);
+    				parent2D(i,j) = Pair(i, j-1);
     			}
     			else { 
     				max = 0;
@@ -139,7 +139,7 @@ class Match {
     		} else {
     			if (topGap > 0) {
     				max = topGap;
-    				parent2D(i,j) = Pair(i, j-1);
+    				parent2D(i,j) = Pair(i-1, j);
     			}
     			else { 
     				max = 0;
