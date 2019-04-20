@@ -76,9 +76,11 @@ class Match {
     stringA = parseFasta(fastaOne);
     stringB = parseFasta(fastaTwo);
     
-    // TODO: Add smith-waterman sequential
+    // smith-waterman sequential version
     val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
     val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
+    var globalMax:Long = 0;
+    var max_i:Long = -1, max_j:Long = -1;
     
     Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
     Console.OUT.println("Scoring Matrxi Cols: " + scoringMatrix.numElems_2);
@@ -101,10 +103,20 @@ class Match {
     		// Assign the Max value to the scoring matrix
     		scoringMatrix(i, j) = max;
     		
+    		// Note down the global max value of the scoring matrix
+    		if(max > globalMax){
+    			globalMax = max;
+    			max_i = i;
+    			max_j = j;
+    		}
+    		
     		// Console.OUT.print(max + "\t");
     	}
     	// Console.OUT.println("");
     }
+    
+    Console.OUT.println("Max value in scoring matrix: " + globalMax);
+    Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
     
     // TODO: Traceback
     
