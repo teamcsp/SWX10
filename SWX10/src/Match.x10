@@ -6,6 +6,7 @@ import x10.array.Array_2;
 import x10.util.Timer;
 import x10.util.RailBuilder;
 import x10.lang.Math;
+import x10.util.Pair;
 
 class Match {
   public static def main(args:Rail[String]) {
@@ -81,9 +82,11 @@ class Match {
     val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
     var globalMax:Long = 0;
     var max_i:Long = -1, max_j:Long = -1;
-    
+    val biggerStringSize:Long = (stringA.size > stringB.size) ? stringA.size : stringB.size+1;
+    val parent2D: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
+        
     Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
-    Console.OUT.println("Scoring Matrxi Cols: " + scoringMatrix.numElems_2);
+    Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
     
     // Compute the Scoring Matrix
     for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
@@ -96,9 +99,50 @@ class Match {
     		
     		// Find the Max value
     		var max:Long = 0;
-    		max = Math.max(max, match);
-    		max = Math.max(max, sideGap);
-    		max = Math.max(max, topGap);
+    		
+    		if (match > sideGap) {
+    			if (match > topGap) {
+    				if ( match > 0 ) {
+    					max = match;
+    					parent2D(i,j) = Pair(i-1, j-1);
+    				}
+    				else {
+    					max = 0;
+    					parent2D(i,j) = Pair(-1 as Long, -1 as Long);
+    				}
+    			} else {
+    				if (topGap > 0) {
+    					max = topGap;
+    					parent2D(i,j) = Pair(i, j-1);
+    				}
+    				else {
+    					max = 0;
+    					parent2D(i,j) = Pair(-1 as Long, -1 as Long);
+    				}
+    			}
+    		} else if (sideGap > topGap) {
+    			if (sideGap > 0) {
+    				max = sideGap;
+    				parent2D(i,j) = Pair(i-1, j);
+    			}
+    			else { 
+    				max = 0;
+    				parent2D(i,j) = Pair(-1 as Long, -1 as Long);
+    			}
+    		} else {
+    			if (topGap > 0) {
+    				max = topGap;
+    				parent2D(i,j) = Pair(i, j-1);
+    			}
+    			else { 
+    				max = 0;
+    				parent2D(i,j) = Pair(-1 as Long, -1 as Long);
+    			}
+    		}
+    		
+    		//max = Math.max(max, match);
+    		//max = Math.max(max, sideGap);
+    		//max = Math.max(max, topGap);
     		
     		// Assign the Max value to the scoring matrix
     		scoringMatrix(i, j) = max;
@@ -119,7 +163,7 @@ class Match {
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
     
     // TODO: Traceback
-    
+    Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j));
     return;
   }
   
