@@ -166,7 +166,7 @@ class Match {
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
     
-    // TODO: Traceback
+    // Traceback from the element with the biggest score in the Scoring Matrix
     Console.OUT.println("Parent2D [max_i][max_j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
     var matchA:String = ""; var matchB:String = "";
