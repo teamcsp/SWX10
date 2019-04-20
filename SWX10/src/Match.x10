@@ -171,22 +171,22 @@ class Match {
     Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
     var tempI:Long = max_i; var tempJ:Long = max_j;
-    var matchI:String = ""; var matchJ:String = "";
+    var matchA:String = ""; var matchB:String = "";
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	//Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
     	//Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
-    	matchI = stringA(tempI-1) + matchI;
-    	matchJ = stringB(tempJ-1) + matchJ;
+    	matchA = stringA(tempI-1) + matchA;
+    	matchB = stringB(tempJ-1) + matchB;
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
-    	//Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
+    	Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
-    Console.OUT.println("Match I : " + matchI);
-    Console.OUT.println("Match J : " + matchJ);
+    Console.OUT.println("Match A : " + matchA);
+    Console.OUT.println("Match B : " + matchB);
     return;
     
   }
