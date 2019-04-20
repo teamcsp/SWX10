@@ -179,7 +179,7 @@ class Match {
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	
-    	Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+    	// Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
     	
