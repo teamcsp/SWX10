@@ -4,6 +4,7 @@ import x10.io.File;
 import x10.lang.Int;
 import x10.array.Array_2;
 import x10.util.Timer;
+import x10.util.RailBuilder;
 
 class Match {
   public static def main(args:Rail[String]) {
@@ -33,6 +34,7 @@ class Match {
 		gapB = args(4);
 	}
 	else {
+		// Some default parameters
 		fastaOne = "AF043946.1";
 		fastaTwo = "AF043947.1";
 		blosum = "BLOSUM62";
@@ -65,7 +67,35 @@ class Match {
     Console.OUT.println("Test sub matrix for subMatrix[M][B] expects -3; From matrix = " + subMatrix('M'.ord(),'B'.ord()));
     Console.OUT.println("Test sub matrix for subMatrix[B][B] expects 4; From matrix = " + subMatrix('B'.ord(),'B'.ord()));
     Console.OUT.println("Test sub matrix for subMatrix[Z][G] expects -2; From matrix = " + subMatrix('Z'.ord(),'G'.ord()));
+    
+    // Parse fasta files into stringA and stringB
+    val stringA: Rail[Char];
+    val stringB: Rail[Char];
+    
+    stringA = parseFasta(fastaOne);
+    stringB = parseFasta(fastaTwo);
+    
+    return;
+  }
   
+  // Parses a given FASTA into a Rail of Chars
+  public static def parseFasta(fastaName:String): Rail[Char] {
+	  val fastaFile = new File("fasta/" + fastaName + ".fasta");
+	  val fastaLines = fastaFile.lines();
+	  fastaLines.next(); // Skip the first line
+	  
+	  // Rail Builder for building the rail of chars
+	  val railBuilder: RailBuilder[Char] = new RailBuilder[Char]();
+	  
+	  // Add each char from each line to the railBuilder
+	  for(line in fastaLines){
+		  for(var i:Int = (0 as Int); i<line.length(); i++ ){
+			  railBuilder.add(line.charAt(i));	
+		  }
+	  }
+	  
+	  // Return the rail of chars
+	  return railBuilder.result();
   }
   
   // Parses file with inputMatrixFileName, and stores the result into acids and subMatrix
