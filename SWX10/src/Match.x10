@@ -177,8 +177,16 @@ class Match {
     var tempI:Long = parent2D(max_i, max_j).first; 
     var tempJ:Long = parent2D(max_i, max_j).second;
     
+    // Gap Count for counting the number of gaps encountered during traceback
     var gapCount: Long = 0;
-    var traceCount:Long = 1; 
+    
+    // Trace Length for tracking the length of matchA and matchB during traceback
+    // Trace Length starts at 1, since the first char is already added to the matchA and matchB strings
+    var traceLength:Long = 1; 
+    
+    // Identity Count for counting the true char matches between matchA and matchB
+    // Identity Count starts at 1, assuming the first char from the two strings are a true match
+    // i.e stringA(max_i-1) == stringB(max_j-1)
     var identityCount:Long = 1;
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
@@ -194,6 +202,7 @@ class Match {
     		matchA = stringA(tempI-1) + matchA;
     		matchB = stringB(tempJ-1) + matchB;
     		
+    		// Important to check if the chars are a true match
     		if(stringA(tempI-1) == stringB(tempJ-1)){
     			identityCount++;
     		}
@@ -219,15 +228,15 @@ class Match {
     		gapCount++;
     	}
     	
-    	traceCount++;
+    	traceLength++;
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
     	// Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
-    Console.OUT.println("Identity : " + identityCount + "/" + traceCount);
-    Console.OUT.println("Gaps : " + gapCount + "/" + traceCount);
+    Console.OUT.println("Identity : " + identityCount + "/" + traceLength);
+    Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
     Console.OUT.println("Match A : " + matchA);
     Console.OUT.println("Match B : " + matchB);
     return;
