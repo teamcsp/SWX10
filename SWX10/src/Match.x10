@@ -169,10 +169,12 @@ class Match {
     var matchI:String = ""; var matchJ:String = "";
     
     while(parent2D(tempI, tempJ).first != -1 as Long && parent2D(tempI, tempJ).second != -1 as Long) {
+    	Console.OUT.println("A");
     	matchI = stringA(parent2D(tempI as Long, tempJ as Long).first) + matchI;
     	matchJ = stringB(parent2D(tempI as Long, tempJ as Long).second) + matchJ;
-    	
+    	Console.OUT.println("B");
     	tempI = parent2D(tempI, tempJ).first;
+    	Console.OUT.println("C");
     	tempJ = parent2D(tempI, tempJ).second;
     }
     
