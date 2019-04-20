@@ -96,7 +96,7 @@ class Match {
     Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
     Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
     
-    // Compute the Scoring Matrix
+    // Compute the Scoring Matrix, and also the parent2D matrix
     for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
     	for(var j:Long = 1; j<scoringMatrix.numElems_2; j++){
     		
