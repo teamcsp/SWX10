@@ -75,7 +75,15 @@ class Match {
     val stringB: Rail[Char];
     
     stringA = parseFasta(fastaOne);
+    for (char in stringA){
+    	Console.OUT.print(char + " ");
+    }
+    Console.OUT.println();
     stringB = parseFasta(fastaTwo);
+    for (char in stringB){
+    	Console.OUT.print(char + " ");
+    }
+    Console.OUT.println();    
     
     // smith-waterman sequential version
     val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
@@ -144,7 +152,7 @@ class Match {
     		scoringMatrix(i, j) = max;
     		
     		// Note down the global max value of the scoring matrix
-    		if(max > globalMax){
+    		if(max >= globalMax){
     			globalMax = max;
     			max_i = i;
     			max_j = j;
@@ -157,23 +165,25 @@ class Match {
     
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
-    
+    Console.OUT.println("Max i: " + max_i + " Max j: " + scoringMatrix(10,7));
     // TODO: Traceback
     Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
     var tempI:Long = max_i; var tempJ:Long = max_j;
     var matchI:String = ""; var matchJ:String = "";
     
-    while(parent2D(tempI, tempJ).first != 0 as Long && parent2D(tempI, tempJ).second != 0 as Long) {
-    	//Console.OUT.println("A");
-    	matchI = stringA(parent2D(tempI as Long, tempJ as Long).first) + matchI;
-    	matchJ = stringB(parent2D(tempI as Long, tempJ as Long).second) + matchJ;
-    	//Console.OUT.println("B");
-    	tempI = parent2D(tempI, tempJ).first;
-    	//Console.OUT.println("C");
-    	tempJ = parent2D(tempI, tempJ).second;
+    Console.OUT.println("Parent2D [2][5]: " + parent2D(2,5).first + " " + parent2D(2,5).second);
+    
+    while (parent2D(tempI, tempJ) != Pair(0,0)) {
+    	Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+    	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
     	
-    	if (tempI == -1 || tempJ == -1) break;
+    	matchI = stringA(tempI-1) + matchI;
+    	matchJ = stringB(tempJ-1) + matchJ;
+    	
+    	tempI = parent.first as Long;
+    	tempJ = parent.second as Long;
+    	Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
     Console.OUT.println("Match I : " + matchI);
