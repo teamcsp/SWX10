@@ -177,6 +177,10 @@ class Match {
     var tempI:Long = parent2D(max_i, max_j).first; 
     var tempJ:Long = parent2D(max_i, max_j).second;
     
+    var gapCount: Long = 0;
+    var traceCount:Long = 1; 
+    var identityCount:Long = 1;
+    
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	
     	// Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
@@ -189,6 +193,10 @@ class Match {
     	if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
     		matchA = stringA(tempI-1) + matchA;
     		matchB = stringB(tempJ-1) + matchB;
+    		
+    		if(stringA(tempI-1) == stringB(tempJ-1)){
+    			identityCount++;
+    		}
     	}
     	else {
     		// parent is left
@@ -207,13 +215,19 @@ class Match {
     			// Add '-' for gap in MatchB
     			matchB = "-" + matchB;
     		}
+    		
+    		gapCount++;
     	}
+    	
+    	traceCount++;
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
     	// Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
+    Console.OUT.println("Identity : " + identityCount + "/" + traceCount);
+    Console.OUT.println("Gaps : " + gapCount + "/" + traceCount);
     Console.OUT.println("Match A : " + matchA);
     Console.OUT.println("Match B : " + matchB);
     return;
