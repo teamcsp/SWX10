@@ -6,3 +6,6 @@ SWX10/src-java
 SWX10/x10-gen-src
 SWX10/.classpath
 SWX10/.project
+*.h
+*.cc
+Match
