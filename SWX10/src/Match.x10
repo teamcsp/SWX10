@@ -111,6 +111,7 @@ class Match {
     		if (match > sideGap) {
     			if (match > topGap) {
     				if ( match > 0 ) {
+    					// match is the greatest and is positive
     					max = match;
     					parent2D(i,j) = Pair(i-1, j-1);
     				}
@@ -119,6 +120,7 @@ class Match {
     				}
     			} else {
     				if (topGap > 0) {
+    					// topGap is the greatest and is positive
     					max = topGap;
     					parent2D(i,j) = Pair(i-1, j);
     				}
@@ -128,6 +130,7 @@ class Match {
     			}
     		} else if (sideGap > topGap) {
     			if (sideGap > 0) {
+    				// sideGap is the greatest and is positive
     				max = sideGap;
     				parent2D(i,j) = Pair(i, j-1);
     			}
@@ -136,6 +139,7 @@ class Match {
     			}
     		} else {
     			if (topGap > 0) {
+    				// topGap is the greatest and is positive
     				max = topGap;
     				parent2D(i,j) = Pair(i-1, j);
     			}
@@ -143,10 +147,6 @@ class Match {
     				max = 0;
     			}
     		}
-    		
-    		//max = Math.max(max, match);
-    		//max = Math.max(max, sideGap);
-    		//max = Math.max(max, topGap);
     		
     		// Assign the Max value to the scoring matrix
     		scoringMatrix(i, j) = max;
@@ -165,10 +165,9 @@ class Match {
     
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
-    //Console.OUT.println("Test scorematrix[6][3]: " + scoringMatrix(6,3));
     
     // TODO: Traceback
-    Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
+    Console.OUT.println("Parent2D [max_i][max_j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
     var matchA:String = ""; var matchB:String = "";
     
@@ -177,15 +176,14 @@ class Match {
     
     var tempI:Long = parent2D(max_i, max_j).first; 
     var tempJ:Long = parent2D(max_i, max_j).second;
-        
-    //var MemA:Char; var MemB:Char;
-    //var isMemASet: Boolean = false;
-    //var isMemBSet: Boolean = false;
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
-    	//Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+    	
+    	Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+    	
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-    	//Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
+    	
+    	// Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
     	
     	// if parent is diagonal no problem
     	if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
@@ -195,11 +193,10 @@ class Match {
     	else {
     		// parent is left
     		if (parent.first as Long == tempI && parent.second as Long == (tempJ-1)) {
-    			//MatchB not affected
+    			// MatchB not affected
     			matchB = stringB(tempJ-1) + matchB;
     			
-    			//MemA = stringA(tempI-1);
-    			//isMemASet= true;
+    			// Add '-' for gap in MatchA
     			matchA = "-" + matchA;
     		} 
     		// parent is top
@@ -207,15 +204,14 @@ class Match {
     			//MatchA not affected
     			matchA = stringA(tempI-1) + matchA;
     			
-    			//MemB = stringB(tempJ-1);
-    			//isMemBSet= true;
+    			// Add '-' for gap in MatchB
     			matchB = "-" + matchB;
     		}
     	}
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
-    	//Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
+    	// Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
     Console.OUT.println("Match A : " + matchA);
