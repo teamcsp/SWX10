@@ -5,6 +5,7 @@ import x10.lang.Int;
 import x10.array.Array_2;
 import x10.util.Timer;
 import x10.util.RailBuilder;
+import x10.lang.Math;
 
 class Match {
   public static def main(args:Rail[String]) {
@@ -77,6 +78,35 @@ class Match {
     
     // TODO: Add smith-waterman sequential
     val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
+    val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
+    
+    Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
+    Console.OUT.println("Scoring Matrxi Cols: " + scoringMatrix.numElems_2);
+    
+    // Compute the Scoring Matrix
+    for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
+    	for(var j:Long = 1; j<scoringMatrix.numElems_2; j++){
+    		
+    		// Compute the 3 required values
+    		val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+    		val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
+    		val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
+    		
+    		// Find the Max value
+    		var max:Long = 0;
+    		max = Math.max(max, match);
+    		max = Math.max(max, sideGap);
+    		max = Math.max(max, topGap);
+    		
+    		// Assign the Max value to the scoring matrix
+    		scoringMatrix(i, j) = max;
+    		
+    		// Console.OUT.print(max + "\t");
+    	}
+    	// Console.OUT.println("");
+    }
+    
+    // TODO: Traceback
     
     return;
   }
