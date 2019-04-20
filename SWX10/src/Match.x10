@@ -185,7 +185,7 @@ class Match {
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	//Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-    	Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
+    	//Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
     	
     	// if parent is diagonal no problem
     	if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
@@ -215,7 +215,7 @@ class Match {
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
-    	Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
+    	//Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
     }
     
     Console.OUT.println("Match A : " + matchA);
