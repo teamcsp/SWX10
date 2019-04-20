@@ -75,6 +75,9 @@ class Match {
     stringA = parseFasta(fastaOne);
     stringB = parseFasta(fastaTwo);
     
+    // TODO: Add smith-waterman sequential
+    val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
+    
     return;
   }
   
