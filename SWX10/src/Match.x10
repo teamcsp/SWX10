@@ -163,8 +163,23 @@ class Match {
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
     
     // TODO: Traceback
-    Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j));
+    Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
+    
+    var tempI:Long = max_i; var tempJ:Long = max_j;
+    var matchI:String = ""; var matchJ:String = "";
+    
+    while(parent2D(tempI, tempJ).first != -1 as Long && parent2D(tempI, tempJ).second != -1 as Long) {
+    	matchI = stringA(parent2D(tempI as Long, tempJ as Long).first) + matchI;
+    	matchJ = stringB(parent2D(tempI as Long, tempJ as Long).second) + matchJ;
+    	
+    	tempI = parent2D(tempI, tempJ).first;
+    	tempJ = parent2D(tempI, tempJ).second;
+    }
+    
+    Console.OUT.println("Match I : " + matchI);
+    Console.OUT.println("Match J : " + matchJ);
     return;
+    
   }
   
   // Parses a given FASTA into a Rail of Chars
