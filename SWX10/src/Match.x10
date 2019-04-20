@@ -108,7 +108,6 @@ class Match {
     				}
     				else {
     					max = 0;
-    					parent2D(i,j) = Pair(-1 as Long, -1 as Long);
     				}
     			} else {
     				if (topGap > 0) {
@@ -117,7 +116,6 @@ class Match {
     				}
     				else {
     					max = 0;
-    					parent2D(i,j) = Pair(-1 as Long, -1 as Long);
     				}
     			}
     		} else if (sideGap > topGap) {
@@ -127,7 +125,6 @@ class Match {
     			}
     			else { 
     				max = 0;
-    				parent2D(i,j) = Pair(-1 as Long, -1 as Long);
     			}
     		} else {
     			if (topGap > 0) {
@@ -136,7 +133,6 @@ class Match {
     			}
     			else { 
     				max = 0;
-    				parent2D(i,j) = Pair(-1 as Long, -1 as Long);
     			}
     		}
     		
@@ -168,7 +164,7 @@ class Match {
     var tempI:Long = max_i; var tempJ:Long = max_j;
     var matchI:String = ""; var matchJ:String = "";
     
-    while(parent2D(tempI, tempJ).first != -1 as Long && parent2D(tempI, tempJ).second != -1 as Long) {
+    while(parent2D(tempI, tempJ).first != 0 as Long && parent2D(tempI, tempJ).second != 0 as Long) {
     	//Console.OUT.println("A");
     	matchI = stringA(parent2D(tempI as Long, tempJ as Long).first) + matchI;
     	matchJ = stringB(parent2D(tempI as Long, tempJ as Long).second) + matchJ;
