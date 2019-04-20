@@ -170,15 +170,48 @@ class Match {
     // TODO: Traceback
     Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
-    var tempI:Long = max_i; var tempJ:Long = max_j;
     var matchA:String = ""; var matchB:String = "";
+    
+    matchA += stringA(max_i-1);
+    matchB += stringB(max_j-1);
+    
+    var tempI:Long = parent2D(max_i, max_j).first; 
+    var tempJ:Long = parent2D(max_i, max_j).second;
+        
+    //var MemA:Char; var MemB:Char;
+    //var isMemASet: Boolean = false;
+    //var isMemBSet: Boolean = false;
     
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	//Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-    	//Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
-    	matchA = stringA(tempI-1) + matchA;
-    	matchB = stringB(tempJ-1) + matchB;
+    	Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
+    	
+    	// if parent is diagonal no problem
+    	if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
+    		matchA = stringA(tempI-1) + matchA;
+    		matchB = stringB(tempJ-1) + matchB;
+    	}
+    	else {
+    		// parent is left
+    		if (parent.first as Long == tempI && parent.second as Long == (tempJ-1)) {
+    			//MatchB not affected
+    			matchB = stringB(tempJ-1) + matchB;
+    			
+    			//MemA = stringA(tempI-1);
+    			//isMemASet= true;
+    			matchA = "-" + matchA;
+    		} 
+    		// parent is top
+    		else {
+    			//MatchA not affected
+    			matchA = stringA(tempI-1) + matchA;
+    			
+    			//MemB = stringB(tempJ-1);
+    			//isMemBSet= true;
+    			matchB = "-" + matchB;
+    		}
+    	}
     	
     	tempI = parent.first as Long;
     	tempJ = parent.second as Long;
