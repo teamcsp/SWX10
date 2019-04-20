@@ -102,12 +102,14 @@ class Match {
     		
     		// Compute the 3 required values
     		val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-    		val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
-    		val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
+    		val sideGap:Long = scoringMatrix(i-1, j) - gapPenalty;
+    		val topGap:Long = scoringMatrix(i, j-1) - gapPenalty;
     		
     		// Find the Max value
     		var max:Long = 0;
-    		
+    		if (i == 7 && j == 3) {
+    			Console.OUT.println("Match is " + match + "side is " + sideGap+ "top is " + topGap);
+    		}
     		if (match > sideGap) {
     			if (match > topGap) {
     				if ( match > 0 ) {
@@ -165,19 +167,17 @@ class Match {
     
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
-    Console.OUT.println("Max i: " + max_i + " Max j: " + scoringMatrix(10,7));
+    Console.OUT.println("Test scorematrix[6][3]: " + scoringMatrix(6,3));
     // TODO: Traceback
     Console.OUT.println("Parent2D [i][j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
     
     var tempI:Long = max_i; var tempJ:Long = max_j;
     var matchI:String = ""; var matchJ:String = "";
     
-    Console.OUT.println("Parent2D [2][5]: " + parent2D(2,5).first + " " + parent2D(2,5).second);
-    
     while (parent2D(tempI, tempJ) != Pair(0,0)) {
     	Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
     	val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-    	
+    	Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
     	matchI = stringA(tempI-1) + matchI;
     	matchJ = stringB(tempJ-1) + matchJ;
     	
