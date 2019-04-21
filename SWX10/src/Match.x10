@@ -95,7 +95,9 @@ class Match {
 		Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
 		Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
 		
+		val startTimeSeq: Long = Timer.nanoTime();
 		val result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
+		val endTimeSeq: Long = Timer.nanoTime();
 		
 		globalMax = result.first;
 		max_i = result.second.first;
@@ -212,6 +214,8 @@ class Match {
 		//	doneMatrix(i, 1) = 1;
 		//}
 		
+		val startTimePar: Long = Timer.nanoTime();
+		
 		var numThreads:Long = stringA.size;
 		
 		// Launch the threads. Number of threads required is equal to the length of stringA
@@ -302,6 +306,8 @@ class Match {
 		}
 		}
 
+		val endTimePar: Long = Timer.nanoTime();
+		
 		Console.OUT.println("Max value in scoring matrix: " + globalMaxP);
 		Console.OUT.println("Max i: " + max_iP + " Max j: " + max_jP);
 		
@@ -385,6 +391,9 @@ class Match {
 			Console.OUT.println();
 		}
 		
+		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
+		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
+				
 		return;
 		
 	}
