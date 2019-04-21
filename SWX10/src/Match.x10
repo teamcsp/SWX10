@@ -75,14 +75,14 @@ class Match {
     val stringB: Rail[Char];
     
     stringA = parseFasta(fastaOne);
-    for (char in stringA){
-    	Console.OUT.print(char + " ");
-    }
-    Console.OUT.println();
+    // for (char in stringA){
+    // 	Console.OUT.print(char + " ");
+    // }
+    // Console.OUT.println();
     stringB = parseFasta(fastaTwo);
-    for (char in stringB){
-    	Console.OUT.print(char + " ");
-    }
+    // for (char in stringB){
+    // 	Console.OUT.print(char + " ");
+    // }
     Console.OUT.println();    
     
     // smith-waterman sequential version
@@ -90,78 +90,15 @@ class Match {
     val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
     var globalMax:Long = 0;
     var max_i:Long = -1, max_j:Long = -1;
-    val biggerStringSize:Long = (stringA.size > stringB.size) ? stringA.size : stringB.size+1;
     val parent2D: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
         
     Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
     Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
     
-    // Compute the Scoring Matrix, and also the parent2D matrix
-    for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
-    	for(var j:Long = 1; j<scoringMatrix.numElems_2; j++){
-    		
-    		// Compute the 3 required values
-    		val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-    		val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
-    		val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
-    		
-    		// Find the Max value
-    		var max:Long = 0;
-    		
-    		if (match > sideGap) {
-    			if (match > topGap) {
-    				if ( match > 0 ) {
-    					// match is the greatest and is positive
-    					max = match;
-    					parent2D(i,j) = Pair(i-1, j-1);
-    				}
-    				else {
-    					max = 0;
-    				}
-    			} else {
-    				if (topGap > 0) {
-    					// topGap is the greatest and is positive
-    					max = topGap;
-    					parent2D(i,j) = Pair(i-1, j);
-    				}
-    				else {
-    					max = 0;
-    				}
-    			}
-    		} else if (sideGap > topGap) {
-    			if (sideGap > 0) {
-    				// sideGap is the greatest and is positive
-    				max = sideGap;
-    				parent2D(i,j) = Pair(i, j-1);
-    			}
-    			else { 
-    				max = 0;
-    			}
-    		} else {
-    			if (topGap > 0) {
-    				// topGap is the greatest and is positive
-    				max = topGap;
-    				parent2D(i,j) = Pair(i-1, j);
-    			}
-    			else { 
-    				max = 0;
-    			}
-    		}
-    		
-    		// Assign the Max value to the scoring matrix
-    		scoringMatrix(i, j) = max;
-    		
-    		// Note down the global max value of the scoring matrix
-    		if(max >= globalMax){
-    			globalMax = max;
-    			max_i = i;
-    			max_j = j;
-    		}
-    		
-    		// Console.OUT.print(max + "\t");
-    	}
-    	// Console.OUT.println("");
-    }
+    val result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
+    globalMax = result.first;
+    max_i = result.second.first;
+    max_j = result.second.second;
     
     Console.OUT.println("Max value in scoring matrix: " + globalMax);
     Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
@@ -241,6 +178,76 @@ class Match {
     Console.OUT.println("Match B : " + matchB);
     return;
     
+  }
+  
+  public static def SmithWatermanSeq(subMatrix: Array_2[Int],stringA: Rail[Char], stringB: Rail[Char],scoringMatrix: Array_2[Long], gapPenalty: Long, globalMax:Long, max_i:Long, max_j:Long, parent2D:Array_2[Pair[Long,Long]]): Pair[Long, Pair[Long,Long]] {
+	  var result:Pair[Long, Pair[Long,Long]] = Pair(0 as Long, Pair(0 as Long, 0 as Long));
+	  for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
+		  for(var j:Long = 1; j<scoringMatrix.numElems_2; j++){
+			  
+			  // Compute the 3 required values
+			  val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+			  val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
+			  val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
+			  
+			  // Find the Max value
+			  var max:Long = 0;
+			  
+			  if (match > sideGap) {
+				  if (match > topGap) {
+					  if ( match > 0 ) {
+						  // match is the greatest and is positive
+						  max = match;
+						  parent2D(i,j) = Pair(i-1, j-1);
+					  }
+					  else {
+						  max = 0;
+					  }
+				  } else {
+					  if (topGap > 0) {
+						  // topGap is the greatest and is positive
+						  max = topGap;
+						  parent2D(i,j) = Pair(i-1, j);
+					  }
+					  else {
+						  max = 0;
+					  }
+				  }
+			  } else if (sideGap > topGap) {
+				  if (sideGap > 0) {
+					  // sideGap is the greatest and is positive
+					  max = sideGap;
+					  parent2D(i,j) = Pair(i, j-1);
+				  }
+				  else { 
+					  max = 0;
+				  }
+			  } else {
+				  if (topGap > 0) {
+					  // topGap is the greatest and is positive
+					  max = topGap;
+					  parent2D(i,j) = Pair(i-1, j);
+				  }
+				  else { 
+					  max = 0;
+				  }
+			  }
+			  
+			  // Assign the Max value to the scoring matrix
+			  scoringMatrix(i, j) = max;
+			  
+			  // Note down the global max value of the scoring matrix
+			  if(max >= globalMax){
+				  
+				  result = Pair(max, Pair(i,j));
+				  
+			  }
+			  
+			  // Console.OUT.print(max + "\t");
+		  }
+		  // Console.OUT.println("");
+	  }
+	  return result;
   }
   
   // Parses a given FASTA into a Rail of Chars
