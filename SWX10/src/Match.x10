@@ -268,12 +268,19 @@ class Match {
 						else { 
 							maxP = 0;
 						}
-					} 
+					}
+					Console.OUT.println("bb" + maxP);
 					atomic {
 						if (maxP >= globalMaxP) {
 							globalMaxP = maxP;
+							Console.OUT.println("dd");
 						}
+						
+						// Assign the Max value to the scoring matrix
+						atomic scoringMatrix(i, j) = maxP;
+						
 					}
+					
 					// Escape from this while loop
 					//break;
 				}
