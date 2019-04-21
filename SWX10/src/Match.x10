@@ -236,9 +236,9 @@ class Match {
 				}
 				Console.OUT.println("after when is true from thread: " + i);
 				Console.OUT.println("i = " + i + "  j = " + j );
-				val matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-				val sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
-				val topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
+				var matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+				var sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
+				var topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
 				var maxP:Long = 0;
 				
 				// Compute scoringMatrix(i,j)
