@@ -177,10 +177,18 @@ class Match {
 		Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
+
+		for (i in 0..(scoringMatrix.numElems_1-1)) {
+			for (j in 0..(scoringMatrix.numElems_2-1)) {
+				Console.OUT.print(scoringMatrix(i,j) + " ");
+			}
+			Console.OUT.println();
+		}
+
 		
 		// TODO: SMITH-WATERMAN IN PARALLEL
 		
-		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, (i:long, j:long)=>i==0? 0: (j==0) ? 0: -1);
+		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
 		
 		Console.OUT.println("scoreMat(0,0): " + scoringMatrixP(0,0));
 		Console.OUT.println("scoreMat(1,0): " + scoringMatrixP(1,0));
@@ -192,7 +200,7 @@ class Match {
 		var max_iP:Long = -1, max_jP:Long = -1;
 		val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
 		// Done Matrix to track the progress of the computation
-		val doneMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
+		val doneMatrix: Array_2[Boolean] = new Array_2[Boolean](stringA.size+1, stringB.size+1, (i:long, j:long)=>i==0? true: (j==0) ? true: false);
 		
 		// Change top row of doneMatrix to 1s
 		//for(j:Long in 0..(doneMatrix.numElems_2 - 1)){
@@ -221,8 +229,10 @@ class Match {
 			while(j <= numCols){
 				Console.OUT.println("while loop from thread : " + i);
 				// Wait until the 3 required elements in the scoring matrix is ready
+				Console.OUT.println(scoringMatrixP(i-1,j) + " " + scoringMatrixP(i-1,j-1) + " " + scoringMatrixP(i,j-1));
 				
-				when(scoringMatrixP(i-1,j) != -1 && scoringMatrixP(i-1,j-1) != -1 && scoringMatrixP(i,j-1)!= -1){
+				when(doneMatrix(i-1,j) && doneMatrix(i-1,j-1) && doneMatrix(i,j-1)){
+				
 				}
 				Console.OUT.println("after when is true from thread: " + i);
 				Console.OUT.println("i = " + i + "  j = " + j );
@@ -279,16 +289,24 @@ class Match {
 					
 					// Assign the Max value to the scoring matrix
 					atomic scoringMatrix(i, j) = maxP;
-					
+					atomic doneMatrix(i,j) = true;
 				}
 				
 				atomic j++;
-				Console.OUT.println("end of while loop from thread : " + i);
+				
+				Console.OUT.println("while loop from thread : " + i);
 			}
-			
+			Console.OUT.println("Thread completed : " + i);
 		}
 		}
 		Console.OUT.println("Global Max P is :" + globalMaxP);
+
+		for (i in 0..(scoringMatrix.numElems_1-1)) {
+			for (j in 0..(scoringMatrix.numElems_2-1)) {
+				Console.OUT.print(scoringMatrix(i,j) + " ");
+			}
+			Console.OUT.println();
+		}
 		
 		return;
 		
