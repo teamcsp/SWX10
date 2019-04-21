@@ -247,7 +247,7 @@ class Match {
 						if ( matchP > 0 ) {
 							// match is the greatest and is positive
 							maxP = matchP;
-							//parent2D(i,j) = Pair(i-1, j-1);
+							atomic parent2DP(i,j) = Pair(i-1, j-1);
 						}
 						else {
 							maxP = 0;
@@ -256,7 +256,7 @@ class Match {
 						if (topGapP > 0) {
 							// topGap is the greatest and is positive
 							maxP = topGapP;
-							//parent2D(i,j) = Pair(i-1, j);
+							atomic parent2DP(i,j) = Pair(i-1, j);
 						}
 						else {
 							maxP = 0;
@@ -266,7 +266,7 @@ class Match {
 					if (sideGapP > 0) {
 						// sideGap is the greatest and is positive
 						maxP = sideGapP;
-						//parent2D(i,j) = Pair(i, j-1);
+						atomic parent2DP(i,j) = Pair(i as Long, j-1 as Long);
 					}
 					else { 
 						maxP = 0;
@@ -275,7 +275,7 @@ class Match {
 					if (topGapP > 0) {
 						// topGap is the greatest and is positive
 						maxP = topGapP;
-						//parent2D(i,j) = Pair(i-1, j);
+						atomic parent2DP(i,j) = Pair(i-1, j);
 					}
 					else { 
 						maxP = 0;
@@ -285,6 +285,8 @@ class Match {
 				atomic {
 					if (maxP >= globalMaxP) {
 						globalMaxP = maxP;
+						max_iP = i;
+						max_jP = j;
 					}
 					
 					// Assign the Max value to the scoring matrix
@@ -299,8 +301,83 @@ class Match {
 			Console.OUT.println("Thread completed : " + i);
 		}
 		}
-		Console.OUT.println("Global Max P is :" + globalMaxP);
 
+		Console.OUT.println("Max value in scoring matrix: " + globalMaxP);
+		Console.OUT.println("Max i: " + max_iP + " Max j: " + max_jP);
+		
+		// Traceback from the element with the biggest score in the Scoring Matrix
+		Console.OUT.println("Parent2DP [max_iP][max_jP]: " + parent2DP(max_iP,max_jP).first + " " + parent2DP(max_iP,max_jP).second);
+		
+		matchA = "" + stringA(max_iP-1);
+		matchB = "" + stringB(max_jP-1);
+		
+		tempI = parent2DP(max_iP, max_jP).first; 
+		tempJ = parent2DP(max_iP, max_jP).second;
+		
+		// Gap Count for counting the number of gaps encountered during traceback
+		gapCount = 0;
+		
+		// Trace Length for tracking the length of matchA and matchB during traceback
+		// Trace Length starts at 1, since the first char is already added to the matchA and matchB strings
+		traceLength = 1; 
+		
+		// Identity Count for counting the true char matches between matchA and matchB
+		// Identity Count starts at 1, assuming the first char from the two strings are a true match
+		// i.e stringA(max_i-1) == stringB(max_j-1)
+		identityCount = 1;
+
+		
+		while (parent2DP(tempI, tempJ) != Pair(0,0)) {
+			
+			// Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
+			
+			val parent: Pair[Long, Long] = parent2DP(tempI, tempJ);
+			
+			// Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
+			
+			// if parent is diagonal no problem
+			if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
+				matchA = stringA(tempI-1) + matchA;
+				matchB = stringB(tempJ-1) + matchB;
+				
+				// Important to check if the chars are a true match
+				if(stringA(tempI-1) == stringB(tempJ-1)){
+					identityCount++;
+				}
+			}
+			else {
+				// parent is left
+				if (parent.first as Long == tempI && parent.second as Long == (tempJ-1)) {
+					// MatchB not affected
+					matchB = stringB(tempJ-1) + matchB;
+					
+					// Add '-' for gap in MatchA
+					matchA = "-" + matchA;
+				} 
+				// parent is top
+				else {
+					//MatchA not affected
+					matchA = stringA(tempI-1) + matchA;
+					
+					// Add '-' for gap in MatchB
+					matchB = "-" + matchB;
+				}
+				
+				gapCount++;
+			}
+			
+			traceLength++;
+			
+			tempI = parent.first as Long;
+			tempJ = parent.second as Long;
+			// Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
+		}
+		
+		Console.OUT.println("Identity : " + identityCount + "/" + traceLength);
+		Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
+		Console.OUT.println("Match A : " + matchA);
+		Console.OUT.println("Match B : " + matchB);
+		
 		for (i in 0..(scoringMatrixP.numElems_1-1)) {
 			for (j in 0..(scoringMatrixP.numElems_2-1)) {
 				Console.OUT.print(scoringMatrixP(i,j) + " ");
