@@ -179,14 +179,8 @@ class Match {
 		Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
-
-		// for (i in 0..(scoringMatrix.numElems_1-1)) {
-		// 	for (j in 0..(scoringMatrix.numElems_2-1)) {
-		// 		Console.OUT.print(scoringMatrix(i,j) + " ");
-		// 	}
-		// 	Console.OUT.println();
-		// }
-
+		
+		// printMatrix(scoringMatrix);
 		
 		// TODO: SMITH-WATERMAN IN PARALLEL
 		
@@ -382,18 +376,22 @@ class Match {
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
 		
-		// for (i in 0..(scoringMatrixP.numElems_1-1)) {
-		// 	for (j in 0..(scoringMatrixP.numElems_2-1)) {
-		// 		Console.OUT.print(scoringMatrixP(i,j) + " ");
-		// 	}
-		// 	Console.OUT.println();
-		// }
+		// printMatrix(scoringMatrixP);
 		
 		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
 		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
 				
 		return;
 		
+	}
+	
+	public static def printMatrix(matrix:Array_2[Long]){
+		for (i in 0..(matrix.numElems_1-1)) {
+			for (j in 0..(matrix.numElems_2-1)) {
+				Console.OUT.print(matrix(i,j) + "\t");
+			}
+			Console.OUT.println();
+		}
 	}
 	
 	public static def SmithWatermanSeq(subMatrix: Array_2[Int],stringA: Rail[Char], stringB: Rail[Char],scoringMatrix: Array_2[Long], gapPenalty: Long, globalMax:Long, max_i:Long, max_j:Long, parent2D:Array_2[Pair[Long,Long]]): Pair[Long, Pair[Long,Long]] {
