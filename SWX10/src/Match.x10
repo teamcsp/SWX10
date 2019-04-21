@@ -85,7 +85,7 @@ class Match {
     // }
     Console.OUT.println();    
     
-    // smith-waterman sequential version
+    // smith-waterman sequential version init params
     val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
     val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
     var globalMax:Long = 0;
@@ -96,6 +96,7 @@ class Match {
     Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
     
     val result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
+    
     globalMax = result.first;
     max_i = result.second.first;
     max_j = result.second.second;
