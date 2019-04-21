@@ -116,10 +116,6 @@ class Match {
 		
 		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
 		
-		Console.OUT.println("scoreMat(0,0): " + scoringMatrixP(0,0));
-		Console.OUT.println("scoreMat(1,0): " + scoringMatrixP(1,0));
-		Console.OUT.println("scoreMat(3,3): " + scoringMatrixP(3,3));
-		Console.OUT.println("scoreMat(0,1): " + scoringMatrixP(0,1));
 		
 		val gapPenaltyP:Long = Long.parse(gapA) + Long.parse(gapB);
 		var globalMaxP:Long = 0;
