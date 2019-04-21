@@ -107,78 +107,8 @@ class Match {
 		Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
 		
 		// Traceback from the element with the biggest score in the Scoring Matrix
-		Console.OUT.println("Parent2D [max_i][max_j]: " + parent2D(max_i,max_j).first + " " + parent2D(max_i,max_j).second);
-		
-		var matchA:String = ""; var matchB:String = "";
-		
-		matchA += stringA(max_i-1);
-		matchB += stringB(max_j-1);
-		
-		var tempI:Long = parent2D(max_i, max_j).first; 
-		var tempJ:Long = parent2D(max_i, max_j).second;
-		
-		// Gap Count for counting the number of gaps encountered during traceback
-		var gapCount: Long = 0;
-		
-		// Trace Length for tracking the length of matchA and matchB during traceback
-		// Trace Length starts at 1, since the first char is already added to the matchA and matchB strings
-		var traceLength:Long = 1; 
-		
-		// Identity Count for counting the true char matches between matchA and matchB
-		// Identity Count starts at 1, assuming the first char from the two strings are a true match
-		// i.e stringA(max_i-1) == stringB(max_j-1)
-		var identityCount:Long = 1;
-		
-		while (parent2D(tempI, tempJ) != Pair(0,0)) {
-			
-			// Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
-			
-			val parent: Pair[Long, Long] = parent2D(tempI, tempJ);
-			
-			// Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
-			
-			// if parent is diagonal no problem
-			if ( (tempI-1)== parent.first as Long && (tempJ-1) == parent.second as Long){
-				matchA = stringA(tempI-1) + matchA;
-				matchB = stringB(tempJ-1) + matchB;
-				
-				// Important to check if the chars are a true match
-				if(stringA(tempI-1) == stringB(tempJ-1)){
-					identityCount++;
-				}
-			}
-			else {
-				// parent is left
-				if (parent.first as Long == tempI && parent.second as Long == (tempJ-1)) {
-					// MatchB not affected
-					matchB = stringB(tempJ-1) + matchB;
-					
-					// Add '-' for gap in MatchA
-					matchA = "-" + matchA;
-				} 
-				// parent is top
-				else {
-					//MatchA not affected
-					matchA = stringA(tempI-1) + matchA;
-					
-					// Add '-' for gap in MatchB
-					matchB = "-" + matchB;
-				}
-				
-				gapCount++;
-			}
-			
-			traceLength++;
-			
-			tempI = parent.first as Long;
-			tempJ = parent.second as Long;
-			// Console.OUT.println("tempI : " + tempI + " tempJ : " + tempJ);
-		}
-		
-		Console.OUT.println("Identity : " + identityCount + "/" + traceLength);
-		Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
-		Console.OUT.println("Match A : " + matchA);
-		Console.OUT.println("Match B : " + matchB);
+		// Prints the output to console
+		traceback(stringA, stringB, parent2D, max_i, max_j);
 		
 		// printMatrix(scoringMatrix);
 		
@@ -304,32 +234,45 @@ class Match {
 		Console.OUT.println("Max i: " + max_iP + " Max j: " + max_jP);
 		
 		// Traceback from the element with the biggest score in the Scoring Matrix
-		Console.OUT.println("Parent2DP [max_iP][max_jP]: " + parent2DP(max_iP,max_jP).first + " " + parent2DP(max_iP,max_jP).second);
+		// Prints the output to console
+		traceback(stringA, stringB, parent2DP, max_iP, max_jP);
 		
-		matchA = "" + stringA(max_iP-1);
-		matchB = "" + stringB(max_jP-1);
+		// printMatrix(scoringMatrixP);
 		
-		tempI = parent2DP(max_iP, max_jP).first; 
-		tempJ = parent2DP(max_iP, max_jP).second;
+		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
+		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
+				
+		return;
+		
+	}
+	
+	public static def traceback(stringA:Rail[Char], stringB:Rail[Char], parentMatrix:Array_2[Pair[Long,Long]], start_i:Long, start_j:Long){
+		Console.OUT.println("Parent2DP [max_iP][max_jP]: " + parentMatrix(start_i,start_j).first + " " + parentMatrix(start_i,start_j).second);
+		
+		var matchA:String = "" + stringA(start_i-1);
+		var matchB:String = "" + stringB(start_j-1);
+		
+		var tempI:Long = parentMatrix(start_i, start_j).first; 
+		var tempJ:Long = parentMatrix(start_i, start_j).second;
 		
 		// Gap Count for counting the number of gaps encountered during traceback
-		gapCount = 0;
+		var gapCount:Long = 0;
 		
 		// Trace Length for tracking the length of matchA and matchB during traceback
 		// Trace Length starts at 1, since the first char is already added to the matchA and matchB strings
-		traceLength = 1; 
+		var traceLength:Long = 1; 
 		
 		// Identity Count for counting the true char matches between matchA and matchB
 		// Identity Count starts at 1, assuming the first char from the two strings are a true match
 		// i.e stringA(max_i-1) == stringB(max_j-1)
-		identityCount = 1;
+		var identityCount:Long = 1;
 
 		
-		while (parent2DP(tempI, tempJ) != Pair(0,0)) {
+		while (parentMatrix(tempI, tempJ) != Pair(0,0)) {
 			
 			// Console.OUT.println("Current parent2D : " + parent2D(tempI, tempJ));
 			
-			val parent: Pair[Long, Long] = parent2DP(tempI, tempJ);
+			val parent: Pair[Long, Long] = parentMatrix(tempI, tempJ);
 			
 			// Console.OUT.println("parent score: " + scoringMatrix(tempI,tempJ));
 			
@@ -375,14 +318,6 @@ class Match {
 		Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
-		
-		// printMatrix(scoringMatrixP);
-		
-		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
-		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
-				
-		return;
-		
 	}
 	
 	public static def printMatrix(matrix:Array_2[Long]){
