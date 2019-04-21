@@ -219,44 +219,27 @@ class Match {
 			
 			// Each thread iterates leftwards 
 			while(j <= numCols){
-				Console.OUT.println("back");
+				Console.OUT.println("while loop from thread : " + i);
 				// Wait until the 3 required elements in the scoring matrix is ready
 				
 				when(scoringMatrixP(i-1,j) != -1 && scoringMatrixP(i-1,j-1) != -1 && scoringMatrixP(i,j-1)!= -1){
-					Console.OUT.println("i = " + i + "  j = " + j );
-					val matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-					val sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
-					val topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
-					var maxP:Long = 0;
-					
-					// Compute scoringMatrix(i,j)
-					if (matchP > sideGapP) {
-						if (matchP > topGapP) {
-							if ( matchP > 0 ) {
-								// match is the greatest and is positive
-								maxP = matchP;
-								//parent2D(i,j) = Pair(i-1, j-1);
-							}
-							else {
-								maxP = 0;
-							}
-						} else {
-							if (topGapP > 0) {
-								// topGap is the greatest and is positive
-								maxP = topGapP;
-								//parent2D(i,j) = Pair(i-1, j);
-							}
-							else {
-								maxP = 0;
-							}
+				}
+				Console.OUT.println("after when is true from thread: " + i);
+				Console.OUT.println("i = " + i + "  j = " + j );
+				val matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+				val sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
+				val topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
+				var maxP:Long = 0;
+				
+				// Compute scoringMatrix(i,j)
+				if (matchP > sideGapP) {
+					if (matchP > topGapP) {
+						if ( matchP > 0 ) {
+							// match is the greatest and is positive
+							maxP = matchP;
+							//parent2D(i,j) = Pair(i-1, j-1);
 						}
-					} else if (sideGapP > topGapP) {
-						if (sideGapP > 0) {
-							// sideGap is the greatest and is positive
-							maxP = sideGapP;
-							//parent2D(i,j) = Pair(i, j-1);
-						}
-						else { 
+						else {
 							maxP = 0;
 						}
 					} else {
@@ -265,27 +248,42 @@ class Match {
 							maxP = topGapP;
 							//parent2D(i,j) = Pair(i-1, j);
 						}
-						else { 
+						else {
 							maxP = 0;
 						}
 					}
-					
-					atomic {
-						if (maxP >= globalMaxP) {
-							globalMaxP = maxP;
-						}
-						
-						// Assign the Max value to the scoring matrix
-						atomic scoringMatrix(i, j) = maxP;
-						
+				} else if (sideGapP > topGapP) {
+					if (sideGapP > 0) {
+						// sideGap is the greatest and is positive
+						maxP = sideGapP;
+						//parent2D(i,j) = Pair(i, j-1);
 					}
-					Console.OUT.println("bb");
-					// Escape from this while loop
-					//break;
+					else { 
+						maxP = 0;
+					}
+				} else {
+					if (topGapP > 0) {
+						// topGap is the greatest and is positive
+						maxP = topGapP;
+						//parent2D(i,j) = Pair(i-1, j);
+					}
+					else { 
+						maxP = 0;
+					}
 				}
-				Console.OUT.println("cc");
+				
+				atomic {
+					if (maxP >= globalMaxP) {
+						globalMaxP = maxP;
+					}
+					
+					// Assign the Max value to the scoring matrix
+					atomic scoringMatrix(i, j) = maxP;
+					
+				}
+				
 				atomic j++;
-				Console.OUT.println("dd");
+				Console.OUT.println("end of while loop from thread : " + i);
 			}
 			
 		}
