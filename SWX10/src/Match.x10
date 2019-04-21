@@ -177,6 +177,52 @@ class Match {
     Console.OUT.println("Gaps : " + gapCount + "/" + traceLength);
     Console.OUT.println("Match A : " + matchA);
     Console.OUT.println("Match B : " + matchB);
+    
+    // TODO: SMITH-WATERMAN IN PARALLEL
+    
+    // Done Matrix to track the progress of the computation
+    val doneMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
+    
+    // Change top row of doneMatrix to 1s
+    for(j:Long in 0..(doneMatrix.numElems_2 - 1)){
+    	doneMatrix(1, j) = 1;
+    }
+    
+    // Change first column of doneMatrix to 1s
+    for(i:Long in 0..(doneMatrix.numElems_1 - 1)){
+    	doneMatrix(i, 1) = 1;
+    }
+    
+    var numThreads:Long = stringA.size;
+    
+    // Launch the threads. Number of threads required is equal to the length of stringA
+    for(i in 1..(numThreads)) async {
+    	
+    	// i implies the row that the thread is operating on
+    	
+    	var stop:Boolean = false;
+    	var j:Long = 1;
+    	var numCols:Long = scoringMatrix.numElems_2;
+    	
+    	// Each thread iterates leftwards 
+    	while(j < numCols){
+    		
+    		// Wait until the 3 required elements in the scoring matrix is ready
+    		while(true){
+    			when(top_done & left_done & side_done){
+    				// Compute scoringMatrix(i,j)
+    				
+    				// Escape from this while loop
+    				break;
+    			}
+    		}
+    		
+    		j++;
+    	}
+   
+    }
+    
+    
     return;
     
   }
