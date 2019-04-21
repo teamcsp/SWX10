@@ -205,7 +205,7 @@ class Match {
     	var numCols:Long = scoringMatrix.numElems_2;
     	
     	// Each thread iterates leftwards 
-    	while(j < numCols){
+    	while(j <= numCols){
     		
     		// Wait until the 3 required elements in the scoring matrix is ready
     		while(true){
