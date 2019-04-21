@@ -293,11 +293,10 @@ class Match {
 					}
 					
 					// Assign the Max value to the scoring matrix
-					atomic scoringMatrixP(i, j) = maxP;
-					atomic doneMatrix(i,j) = true;
+					scoringMatrixP(i, j) = maxP;
+					doneMatrix(i,j) = true;
+					j++;
 				}
-				
-				atomic j++;
 				
 				//Console.OUT.println("while loop from thread : " + i);
 			}
