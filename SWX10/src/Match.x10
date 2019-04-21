@@ -227,15 +227,15 @@ class Match {
 			
 			// Each thread iterates leftwards 
 			while(j <= numCols){
-				Console.OUT.println("while loop from thread : " + i);
+				//Console.OUT.println("while loop from thread : " + i);
 				// Wait until the 3 required elements in the scoring matrix is ready
-				Console.OUT.println(scoringMatrixP(i-1,j) + " " + scoringMatrixP(i-1,j-1) + " " + scoringMatrixP(i,j-1));
+				//Console.OUT.println(scoringMatrixP(i-1,j) + " " + scoringMatrixP(i-1,j-1) + " " + scoringMatrixP(i,j-1));
 				
 				when(doneMatrix(i-1,j) && doneMatrix(i-1,j-1) && doneMatrix(i,j-1)){
 				
 				}
-				Console.OUT.println("after when is true from thread: " + i);
-				Console.OUT.println("i = " + i + "  j = " + j );
+				//Console.OUT.println("after when is true from thread: " + i);
+				//Console.OUT.println("i = " + i + "  j = " + j );
 				var matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
 				var sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
 				var topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
@@ -288,22 +288,22 @@ class Match {
 					}
 					
 					// Assign the Max value to the scoring matrix
-					atomic scoringMatrix(i, j) = maxP;
+					atomic scoringMatrixP(i, j) = maxP;
 					atomic doneMatrix(i,j) = true;
 				}
 				
 				atomic j++;
 				
-				Console.OUT.println("while loop from thread : " + i);
+				//Console.OUT.println("while loop from thread : " + i);
 			}
 			Console.OUT.println("Thread completed : " + i);
 		}
 		}
 		Console.OUT.println("Global Max P is :" + globalMaxP);
 
-		for (i in 0..(scoringMatrix.numElems_1-1)) {
-			for (j in 0..(scoringMatrix.numElems_2-1)) {
-				Console.OUT.print(scoringMatrix(i,j) + " ");
+		for (i in 0..(scoringMatrixP.numElems_1-1)) {
+			for (j in 0..(scoringMatrixP.numElems_2-1)) {
+				Console.OUT.print(scoringMatrixP(i,j) + " ");
 			}
 			Console.OUT.println();
 		}
@@ -321,7 +321,7 @@ class Match {
 				val match:Long = scoringMatrix(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
 				val sideGap:Long = scoringMatrix(i, j-1) - gapPenalty;
 				val topGap:Long = scoringMatrix(i-1, j) - gapPenalty;
-				
+								
 				// Find the Max value
 				var max:Long = 0;
 				
