@@ -219,8 +219,8 @@ class Match {
 			
 			// Each thread iterates leftwards 
 			while(j <= numCols){
+				Console.OUT.println("back");
 				// Wait until the 3 required elements in the scoring matrix is ready
-				//while(true){
 				
 				when(scoringMatrixP(i-1,j) != -1 && scoringMatrixP(i-1,j-1) != -1 && scoringMatrixP(i,j-1)!= -1){
 					Console.OUT.println("i = " + i + "  j = " + j );
@@ -269,24 +269,23 @@ class Match {
 							maxP = 0;
 						}
 					}
-					Console.OUT.println("bb" + maxP);
+					
 					atomic {
 						if (maxP >= globalMaxP) {
 							globalMaxP = maxP;
-							Console.OUT.println("dd");
 						}
 						
 						// Assign the Max value to the scoring matrix
 						atomic scoringMatrix(i, j) = maxP;
 						
 					}
-					
+					Console.OUT.println("bb");
 					// Escape from this while loop
 					//break;
 				}
-				//}
-				
-				j++;
+				Console.OUT.println("cc");
+				atomic j++;
+				Console.OUT.println("dd");
 			}
 			
 		}
