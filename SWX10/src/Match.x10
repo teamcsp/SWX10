@@ -97,7 +97,7 @@ class Match {
 		Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
 		
 		val startTimeSeq: Long = Timer.nanoTime();
-		var result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
+		var result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, parent2D);
 		val endTimeSeq: Long = Timer.nanoTime();
 		
 		globalMax = result.first;
@@ -342,8 +342,13 @@ class Match {
 		return Pair(globalMaxP as Long, Pair(max_iP as Long, max_jP as Long));
 	}
 	
-	public static def SmithWatermanSeq(subMatrix: Array_2[Int],stringA: Rail[Char], stringB: Rail[Char],scoringMatrix: Array_2[Long], gapPenalty: Long, globalMax:Long, max_i:Long, max_j:Long, parent2D:Array_2[Pair[Long,Long]]): Pair[Long, Pair[Long,Long]] {
+	public static def SmithWatermanSeq(subMatrix: Array_2[Int],stringA: Rail[Char], stringB: Rail[Char],scoringMatrix: Array_2[Long], gapPenalty: Long, parent2D:Array_2[Pair[Long,Long]]): Pair[Long, Pair[Long,Long]] {
 		var result:Pair[Long, Pair[Long,Long]] = Pair(0 as Long, Pair(0 as Long, 0 as Long));
+		
+		var max_i:Long = -1;
+		var max_j:Long = -1;
+		var globalMax:Long = 0;
+		
 		for(var i:Long = 1; i<scoringMatrix.numElems_1; i++){
 			for(var j:Long = 1; j<scoringMatrix.numElems_2; j++){
 				
@@ -401,7 +406,9 @@ class Match {
 				// Note down the global max value of the scoring matrix
 				if(max >= globalMax){
 					
-					result = Pair(max, Pair(i,j));
+					max_i = i;
+					max_j = j;
+					globalMax = max;
 					
 				}
 				
@@ -409,6 +416,7 @@ class Match {
 			}
 			// Console.OUT.println("");
 		}
+		result = Pair(globalMax, Pair(max_i,max_j));
 		return result;
 	}
 	
