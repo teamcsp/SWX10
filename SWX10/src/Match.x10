@@ -128,15 +128,6 @@ class Match {
 		// Done Matrix to track the progress of the computation
 		val doneMatrix: Array_2[Boolean] = new Array_2[Boolean](stringA.size+1, stringB.size+1, (i:long, j:long)=>i==0? true: (j==0) ? true: false);
 		
-		// Change top row of doneMatrix to 1s
-		//for(j:Long in 0..(doneMatrix.numElems_2 - 1)){
-		//	doneMatrix(1, j) = 1;
-		//}
-		
-		// Change first column of doneMatrix to 1s
-		//for(i:Long in 0..(doneMatrix.numElems_1 - 1)){
-		//	doneMatrix(i, 1) = 1;
-		//}
 		
 		var numThreads:Long = stringA.size;
 		val startTimePar: Long = Timer.nanoTime();
