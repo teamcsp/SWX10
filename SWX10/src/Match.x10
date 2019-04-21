@@ -9,6 +9,7 @@ import x10.lang.Math;
 import x10.util.Pair;
 
 class Match {
+	
 	public static def main(args:Rail[String]) {
 		val SIZE:Long = 127;
 		
@@ -96,7 +97,7 @@ class Match {
 		Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
 		
 		val startTimeSeq: Long = Timer.nanoTime();
-		val result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
+		var result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, globalMax, max_i, max_j, parent2D);
 		val endTimeSeq: Long = Timer.nanoTime();
 		
 		globalMax = result.first;
@@ -112,117 +113,26 @@ class Match {
 		
 		// printMatrix(scoringMatrix);
 		
-		// TODO: SMITH-WATERMAN IN PARALLEL
-		
-		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
-		
-		
-		val gapPenaltyP:Long = Long.parse(gapA) + Long.parse(gapB);
-		var globalMaxP:Long = 0;
-		var max_iP:Long = -1, max_jP:Long = -1;
-		val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
-		// Done Matrix to track the progress of the computation
-		val doneMatrix: Array_2[Boolean] = new Array_2[Boolean](stringA.size+1, stringB.size+1, (i:long, j:long)=>i==0? true: (j==0) ? true: false);
-		
-		
-		var numThreads:Long = stringA.size;
+		// SMITH-WATERMAN IN PARALLEL
 		val startTimePar: Long = Timer.nanoTime();
 		
-		// Launch the threads. Number of threads required is equal to the length of stringA
-		finish { for(i in 1..(numThreads)) async {
-			// i implies the row that the thread is operating on
-			
-			var stop:Boolean = false;
-			var j:Long = 1;
-			var numCols:Long = scoringMatrix.numElems_2 -1 ;
-			var top_done: long = 0;
-			var diag_done: long = 0;
-			var side_done: long = 0;
-			
-			// Each thread iterates leftwards 
-			while(j <= numCols){
-				//Console.OUT.println("while loop from thread : " + i);
-				// Wait until the 3 required elements in the scoring matrix is ready
-				//Console.OUT.println(scoringMatrixP(i-1,j) + " " + scoringMatrixP(i-1,j-1) + " " + scoringMatrixP(i,j-1));
-				
-				when(doneMatrix(i-1,j) && doneMatrix(i-1,j-1) && doneMatrix(i,j-1)){
-				
-				}
-				//Console.OUT.println("after when is true from thread: " + i);
-				//Console.OUT.println("i = " + i + "  j = " + j );
-				var matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
-				var sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
-				var topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
-				var maxP:Long = 0;
-				
-				// Compute scoringMatrix(i,j)
-				if (matchP > sideGapP) {
-					if (matchP > topGapP) {
-						if ( matchP > 0 ) {
-							// match is the greatest and is positive
-							maxP = matchP;
-							atomic parent2DP(i,j) = Pair(i-1, j-1);
-						}
-						else {
-							maxP = 0;
-						}
-					} else {
-						if (topGapP > 0) {
-							// topGap is the greatest and is positive
-							maxP = topGapP;
-							atomic parent2DP(i,j) = Pair(i-1, j);
-						}
-						else {
-							maxP = 0;
-						}
-					}
-				} else if (sideGapP > topGapP) {
-					if (sideGapP > 0) {
-						// sideGap is the greatest and is positive
-						maxP = sideGapP;
-						atomic parent2DP(i,j) = Pair(i as Long, j-1 as Long);
-					}
-					else { 
-						maxP = 0;
-					}
-				} else {
-					if (topGapP > 0) {
-						// topGap is the greatest and is positive
-						maxP = topGapP;
-						atomic parent2DP(i,j) = Pair(i-1, j);
-					}
-					else { 
-						maxP = 0;
-					}
-				}
-				
-				atomic {
-					if (maxP >= globalMaxP) {
-						globalMaxP = maxP;
-						max_iP = i;
-						max_jP = j;
-					}
-					
-					// Assign the Max value to the scoring matrix
-					scoringMatrixP(i, j) = maxP;
-					doneMatrix(i,j) = true;
-					j++;
-				}
-				
-				//Console.OUT.println("while loop from thread : " + i);
-			}
-			//Console.OUT.println("Thread completed : " + i);
-		}
-		}
+		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
+		val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
+		
+		result = SmithWatermanParallel(subMatrix, stringA, stringB, gapPenalty, scoringMatrixP, parent2DP);
 
 		val endTimePar: Long = Timer.nanoTime();
 		
-		Console.OUT.println("Max value in scoring matrix: " + globalMaxP);
-		Console.OUT.println("Max i: " + max_iP + " Max j: " + max_jP);
+		globalMax = result.first;
+		max_i = result.second.first;
+		max_j = result.second.second;
+		
+		Console.OUT.println("Max value in scoring matrix: " + globalMax);
+		Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
 		
 		// Traceback from the element with the biggest score in the Scoring Matrix
 		// Prints the output to console
-		traceback(stringA, stringB, parent2DP, max_iP, max_jP);
+		traceback(stringA, stringB, parent2DP, max_i, max_j);
 		
 		// printMatrix(scoringMatrixP);
 		
@@ -232,6 +142,8 @@ class Match {
 		return;
 		
 	}
+	
+	
 	
 	public static def traceback(stringA:Rail[Char], stringB:Rail[Char], parentMatrix:Array_2[Pair[Long,Long]], start_i:Long, start_j:Long){
 		Console.OUT.println("Parent2DP [max_iP][max_jP]: " + parentMatrix(start_i,start_j).first + " " + parentMatrix(start_i,start_j).second);
@@ -314,6 +226,120 @@ class Match {
 			}
 			Console.OUT.println();
 		}
+	}
+	
+	public static def SmithWatermanParallel(
+			subMatrix: Array_2[Int],
+			stringA: Rail[Char], 
+			stringB: Rail[Char],
+			gapPenaltyP: Long, 
+			scoringMatrixP: Array_2[Long], 
+			parent2DP:Array_2[Pair[Long,Long]]
+	) :Pair[Long, Pair[Long,Long]]{
+		
+		var max_iP:Long = -1;
+		var max_jP:Long = -1;
+		var globalMaxP:Long = 0;
+		
+		var result:Pair[Long, Pair[Long,Long]] = Pair(0 as Long, Pair(0 as Long, 0 as Long));
+		
+		// Done Matrix to track the progress of the computation
+		val doneMatrix: Array_2[Boolean] = new Array_2[Boolean](stringA.size+1, stringB.size+1, (i:long, j:long)=>i==0? true: (j==0) ? true: false);
+		
+		
+		var numThreads:Long = stringA.size;
+		
+		
+		// Launch the threads. Number of threads required is equal to the length of stringA
+		finish { for(i in 1..(numThreads)) async {
+			// i implies the row that the thread is operating on
+			
+			var stop:Boolean = false;
+			var j:Long = 1;
+			var numCols:Long = scoringMatrixP.numElems_2 -1 ;
+			var top_done: long = 0;
+			var diag_done: long = 0;
+			var side_done: long = 0;
+			
+			// Each thread iterates leftwards 
+			while(j <= numCols){
+				//Console.OUT.println("while loop from thread : " + i);
+				// Wait until the 3 required elements in the scoring matrix is ready
+				//Console.OUT.println(scoringMatrixP(i-1,j) + " " + scoringMatrixP(i-1,j-1) + " " + scoringMatrixP(i,j-1));
+				
+				when(doneMatrix(i-1,j) && doneMatrix(i-1,j-1) && doneMatrix(i,j-1)){
+					
+				}
+				//Console.OUT.println("after when is true from thread: " + i);
+				//Console.OUT.println("i = " + i + "  j = " + j );
+				var matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+				var sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
+				var topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
+				var maxP:Long = 0;
+				
+				// Compute scoringMatrix(i,j)
+				if (matchP > sideGapP) {
+					if (matchP > topGapP) {
+						if ( matchP > 0 ) {
+							// match is the greatest and is positive
+							maxP = matchP;
+							atomic parent2DP(i,j) = Pair(i-1, j-1);
+						}
+						else {
+							maxP = 0;
+						}
+					} else {
+						if (topGapP > 0) {
+							// topGap is the greatest and is positive
+							maxP = topGapP;
+							atomic parent2DP(i,j) = Pair(i-1, j);
+						}
+						else {
+							maxP = 0;
+						}
+					}
+				} else if (sideGapP > topGapP) {
+					if (sideGapP > 0) {
+						// sideGap is the greatest and is positive
+						maxP = sideGapP;
+						atomic parent2DP(i,j) = Pair(i as Long, j-1 as Long);
+					}
+					else { 
+						maxP = 0;
+					}
+				} else {
+					if (topGapP > 0) {
+						// topGap is the greatest and is positive
+						maxP = topGapP;
+						atomic parent2DP(i,j) = Pair(i-1, j);
+					}
+					else { 
+						maxP = 0;
+					}
+				}
+				
+				atomic {
+					if (maxP >= globalMaxP) {
+						globalMaxP = maxP;
+						max_iP = i;
+						max_jP = j;
+						
+						// result = Pair(maxP as Long, Pair(i as Long, j as Long));
+					}
+					
+					// Assign the Max value to the scoring matrix
+					scoringMatrixP(i, j) = maxP;
+					doneMatrix(i,j) = true;
+					j++;
+				}
+				
+				//Console.OUT.println("while loop from thread : " + i);
+			}
+			//Console.OUT.println("Thread completed : " + i);
+		}
+		}
+		
+		return Pair(globalMaxP as Long, Pair(max_iP as Long, max_jP as Long));
 	}
 	
 	public static def SmithWatermanSeq(subMatrix: Array_2[Int],stringA: Rail[Char], stringB: Rail[Char],scoringMatrix: Array_2[Long], gapPenalty: Long, globalMax:Long, max_i:Long, max_j:Long, parent2D:Array_2[Pair[Long,Long]]): Pair[Long, Pair[Long,Long]] {
