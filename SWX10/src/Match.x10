@@ -180,48 +180,105 @@ class Match {
     
     // TODO: SMITH-WATERMAN IN PARALLEL
     
+    val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
+    val gapPenaltyP:Long = Long.parse(gapA) + Long.parse(gapB);
+    var globalMaxP:Long = 0;
+    var max_iP:Long = -1, max_jP:Long = -1;
+    val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
     // Done Matrix to track the progress of the computation
     val doneMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
     
     // Change top row of doneMatrix to 1s
-    for(j:Long in 0..(doneMatrix.numElems_2 - 1)){
-    	doneMatrix(1, j) = 1;
-    }
+    //for(j:Long in 0..(doneMatrix.numElems_2 - 1)){
+    //	doneMatrix(1, j) = 1;
+    //}
     
     // Change first column of doneMatrix to 1s
-    for(i:Long in 0..(doneMatrix.numElems_1 - 1)){
-    	doneMatrix(i, 1) = 1;
-    }
+    //for(i:Long in 0..(doneMatrix.numElems_1 - 1)){
+    //	doneMatrix(i, 1) = 1;
+    //}
     
     var numThreads:Long = stringA.size;
     
     // Launch the threads. Number of threads required is equal to the length of stringA
-    for(i in 1..(numThreads)) async {
+    finish { for(i in 1..(numThreads)) async {
     	
     	// i implies the row that the thread is operating on
     	
     	var stop:Boolean = false;
     	var j:Long = 1;
     	var numCols:Long = scoringMatrix.numElems_2;
+    	var top_done: long = 0;
+    	var diag_done: long = 0;
+    	var side_done: long = 0;
     	
     	// Each thread iterates leftwards 
     	while(j <= numCols){
-    		
     		// Wait until the 3 required elements in the scoring matrix is ready
-    		while(true){
-    			when(top_done & left_done & side_done){
-    				// Compute scoringMatrix(i,j)
+    		//while(true){
+    			when(scoringMatrixP(i-1,j) != -1 && scoringMatrixP(i-1,j-1) != -1 && scoringMatrixP(i,j-1)!= -1){
+
+    				val matchP:Long = scoringMatrixP(i-1, j-1) + subMatrix(stringA(i-1).ord(), stringB(j-1).ord());
+    				val sideGapP:Long = scoringMatrixP(i, j-1) - gapPenaltyP;
+    				val topGapP:Long = scoringMatrixP(i-1, j) - gapPenaltyP;
+    				var maxP:Long = 0;
     				
+    				// Compute scoringMatrix(i,j)
+    				if (matchP > sideGapP) {
+    					if (matchP > topGapP) {
+    						if ( matchP > 0 ) {
+    							// match is the greatest and is positive
+    							maxP = matchP;
+    							//parent2D(i,j) = Pair(i-1, j-1);
+    						}
+    						else {
+    							maxP = 0;
+    						}
+    					} else {
+    						if (topGapP > 0) {
+    							// topGap is the greatest and is positive
+    							maxP = topGapP;
+    							//parent2D(i,j) = Pair(i-1, j);
+    						}
+    						else {
+    							maxP = 0;
+    						}
+    					}
+    				} else if (sideGapP > topGapP) {
+    					if (sideGapP > 0) {
+    						// sideGap is the greatest and is positive
+    						maxP = sideGapP;
+    						//parent2D(i,j) = Pair(i, j-1);
+    					}
+    					else { 
+    						maxP = 0;
+    					}
+    				} else {
+    					if (topGapP > 0) {
+    						// topGap is the greatest and is positive
+    						maxP = topGapP;
+    						//parent2D(i,j) = Pair(i-1, j);
+    					}
+    					else { 
+    						maxP = 0;
+    					}
+    				} 
+    				atomic {
+    					if (maxP >= globalMaxP) {
+    						globalMaxP = maxP;
+    					}
+    				}
     				// Escape from this while loop
-    				break;
+    				//break;
     			}
-    		}
+    		//}
     		
     		j++;
     	}
    
     }
-    
+    }
+    Console.OUT.println("Global Max P is :" + globalMaxP);
     
     return;
     
