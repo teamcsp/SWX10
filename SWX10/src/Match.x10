@@ -180,12 +180,12 @@ class Match {
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
 
-		for (i in 0..(scoringMatrix.numElems_1-1)) {
-			for (j in 0..(scoringMatrix.numElems_2-1)) {
-				Console.OUT.print(scoringMatrix(i,j) + " ");
-			}
-			Console.OUT.println();
-		}
+		// for (i in 0..(scoringMatrix.numElems_1-1)) {
+		// 	for (j in 0..(scoringMatrix.numElems_2-1)) {
+		// 		Console.OUT.print(scoringMatrix(i,j) + " ");
+		// 	}
+		// 	Console.OUT.println();
+		// }
 
 		
 		// TODO: SMITH-WATERMAN IN PARALLEL
@@ -214,9 +214,8 @@ class Match {
 		//	doneMatrix(i, 1) = 1;
 		//}
 		
-		val startTimePar: Long = Timer.nanoTime();
-		
 		var numThreads:Long = stringA.size;
+		val startTimePar: Long = Timer.nanoTime();
 		
 		// Launch the threads. Number of threads required is equal to the length of stringA
 		finish { for(i in 1..(numThreads)) async {
@@ -302,7 +301,7 @@ class Match {
 				
 				//Console.OUT.println("while loop from thread : " + i);
 			}
-			Console.OUT.println("Thread completed : " + i);
+			//Console.OUT.println("Thread completed : " + i);
 		}
 		}
 
@@ -384,12 +383,12 @@ class Match {
 		Console.OUT.println("Match A : " + matchA);
 		Console.OUT.println("Match B : " + matchB);
 		
-		for (i in 0..(scoringMatrixP.numElems_1-1)) {
-			for (j in 0..(scoringMatrixP.numElems_2-1)) {
-				Console.OUT.print(scoringMatrixP(i,j) + " ");
-			}
-			Console.OUT.println();
-		}
+		// for (i in 0..(scoringMatrixP.numElems_1-1)) {
+		// 	for (j in 0..(scoringMatrixP.numElems_2-1)) {
+		// 		Console.OUT.print(scoringMatrixP(i,j) + " ");
+		// 	}
+		// 	Console.OUT.println();
+		// }
 		
 		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
 		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
