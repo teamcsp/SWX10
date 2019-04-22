@@ -103,8 +103,10 @@ class Match {
 		val startTimeSW: Long = Timer.nanoTime();
 		
 		if (mode == "seq") {
+			Console.OUT.println("Running sequential");
 			result = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, parent2D);
 		} else {
+			Console.OUT.println("Running parallel");
 			result = SmithWatermanParallel(subMatrix, stringA, stringB, gapPenalty, scoringMatrix, parent2D);
 		}
 		val endTimeSW: Long = Timer.nanoTime();
