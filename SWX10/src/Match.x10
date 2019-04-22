@@ -293,13 +293,16 @@ class Match {
 					}
 				}
 				
-				atomic globalMaxP = (maxP >= globalMaxP) ? maxP as Long: globalMaxP as Long;
-				
-				max_iP = i;
-				max_jP = j;
+				atomic {
+					if (maxP >= globalMaxP) {
+						globalMaxP = maxP;
+						max_iP = i;
+						max_jP = j;
 						
-				// result = Pair(maxP as Long, Pair(i as Long, j as Long));	
-				
+						// result = Pair(maxP as Long, Pair(i as Long, j as Long));
+					}
+					
+				}
 
 				// Assign the Max value to the scoring matrix
 				scoringMatrixP(i, j) = maxP;
