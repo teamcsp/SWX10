@@ -27,14 +27,15 @@ class Match {
 		 * gapB:	gap extention penalty
 		 */
 		
-		val fastaOne:String, fastaTwo:String, blosum:String, gapA:String, gapB:String;
+		val fastaOne:String, fastaTwo:String, blosum:String, gapA:String, gapB:String, mode: String;
 		
-		if(args.size == 5){
+		if(args.size == 6){
 			fastaOne = args(0);
 			fastaTwo = args(1);
 			blosum = args(2);
 			gapA = args(3);
 			gapB = args(4);
+			mode = args(5);
 		}
 		else {
 			// Some default parameters
@@ -43,6 +44,7 @@ class Match {
 			blosum = "BLOSUM62";
 			gapA = "10";
 			gapB = "5";
+			mode = "seq";
 		}
 		
 		// 1D Rail to store the raw (in chars) Substitution Matrix
@@ -86,7 +88,7 @@ class Match {
 		// }
 		Console.OUT.println();    
 		
-		// smith-waterman sequential version init params
+		// smith-waterman init params
 		val scoringMatrix: Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1);
 		val gapPenalty:Long = Long.parse(gapA) + Long.parse(gapB);
 		var globalMax:Long = 0;
@@ -96,9 +98,16 @@ class Match {
 		Console.OUT.println("Scoring Matrix Rows: " + scoringMatrix.numElems_1);
 		Console.OUT.println("Scoring Matrix Cols: " + scoringMatrix.numElems_2);
 		
-		val startTimeSeq: Long = Timer.nanoTime();
-		var result: Pair[Long, Pair[Long,Long]] = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, parent2D);
-		val endTimeSeq: Long = Timer.nanoTime();
+		var result: Pair[Long, Pair[Long,Long]];
+		
+		val startTimeSW: Long = Timer.nanoTime();
+		
+		if (mode == "seq") {
+			result = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, parent2D);
+		} else {
+			result = SmithWatermanParallel(subMatrix, stringA, stringB, gapPenalty, scoringMatrix, parent2D);
+		}
+		val endTimeSW: Long = Timer.nanoTime();
 		
 		globalMax = result.first;
 		max_i = result.second.first;
@@ -112,33 +121,8 @@ class Match {
 		traceback(stringA, stringB, parent2D, max_i, max_j);
 		
 		// printMatrix(scoringMatrix);
-		
-		// SMITH-WATERMAN IN PARALLEL
-		
-		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
-		val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
-		
-		val startTimePar: Long = Timer.nanoTime();
-		
-		result = SmithWatermanParallel(subMatrix, stringA, stringB, gapPenalty, scoringMatrixP, parent2DP);
 
-		val endTimePar: Long = Timer.nanoTime();
-		
-		globalMax = result.first;
-		max_i = result.second.first;
-		max_j = result.second.second;
-		
-		Console.OUT.println("Max value in scoring matrix: " + globalMax);
-		Console.OUT.println("Max i: " + max_i + " Max j: " + max_j);
-		
-		// Traceback from the element with the biggest score in the Scoring Matrix
-		// Prints the output to console
-		traceback(stringA, stringB, parent2DP, max_i, max_j);
-		
-		// printMatrix(scoringMatrixP);
-		
-		Console.OUT.println("Time elapsed seq smith waterman : " + (endTimeSeq-startTimeSeq)/1000 + " microsecs");
-		Console.OUT.println("Time elapsed par smith waterman : " + (endTimePar-startTimePar)/1000 + " microsecs");
+		Console.OUT.println("Time elapsed " + mode + " smith waterman : " + (endTimeSW-startTimeSW)/1000 + " microsecs");
 				
 		return;
 		
