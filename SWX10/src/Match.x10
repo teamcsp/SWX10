@@ -270,43 +270,41 @@ class Match {
 						if ( matchP > 0 ) {
 							// match is the greatest and is positive
 							maxP = matchP;
-							atomic parent2DP(i,j) = Pair(i-1, j-1);
+							parent2DP(i,j) = Pair(i-1, j-1);
 						}
 					} else {
 						if (topGapP > 0) {
 							// topGap is the greatest and is positive
 							maxP = topGapP;
-							atomic parent2DP(i,j) = Pair(i-1, j);
+							parent2DP(i,j) = Pair(i-1, j);
 						}
 					}
 				} else if (sideGapP > topGapP) {
 					if (sideGapP > 0) {
 						// sideGap is the greatest and is positive
 						maxP = sideGapP;
-						atomic parent2DP(i,j) = Pair(i as Long, j-1 as Long);
+						parent2DP(i,j) = Pair(i as Long, j-1 as Long);
 					}
 				} else {
 					if (topGapP > 0) {
 						// topGap is the greatest and is positive
 						maxP = topGapP;
-						atomic parent2DP(i,j) = Pair(i-1, j);
+						parent2DP(i,j) = Pair(i-1, j);
 					}
 				}
 				
-				atomic {
-					if (maxP >= globalMaxP) {
-						globalMaxP = maxP;
-						max_iP = i;
-						max_jP = j;
+				atomic globalMaxP = (maxP >= globalMaxP) ? maxP: globalMaxP;
+				
+				max_iP = i;
+				max_jP = j;
 						
-						// result = Pair(maxP as Long, Pair(i as Long, j as Long));
-					}
-					
-					// Assign the Max value to the scoring matrix
-					scoringMatrixP(i, j) = maxP;
-					doneMatrix(i,j) = true;
-					j++;
-				}
+				// result = Pair(maxP as Long, Pair(i as Long, j as Long));	
+				
+
+				// Assign the Max value to the scoring matrix
+				scoringMatrixP(i, j) = maxP;
+				doneMatrix(i,j) = true;
+				j++;
 				
 				//Console.OUT.println("while loop from thread : " + i);
 			}
