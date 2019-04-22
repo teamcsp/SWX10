@@ -102,7 +102,7 @@ class Match {
 		
 		val startTimeSW: Long = Timer.nanoTime();
 		
-		if (mode == "seq") {
+		if (mode.equals("seq")) {
 			Console.OUT.println("Running sequential");
 			result = SmithWatermanSeq(subMatrix,stringA, stringB, scoringMatrix, gapPenalty, parent2D);
 		} else {
