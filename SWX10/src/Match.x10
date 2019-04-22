@@ -114,10 +114,11 @@ class Match {
 		// printMatrix(scoringMatrix);
 		
 		// SMITH-WATERMAN IN PARALLEL
-		val startTimePar: Long = Timer.nanoTime();
 		
 		val scoringMatrixP : Array_2[Long] = new Array_2[Long](stringA.size+1, stringB.size+1, 0);
 		val parent2DP: Array_2[Pair[Long,Long]] = new Array_2[Pair[Long, Long]](stringA.size+1, stringB.size+1);
+		
+		val startTimePar: Long = Timer.nanoTime();
 		
 		result = SmithWatermanParallel(subMatrix, stringA, stringB, gapPenalty, scoringMatrixP, parent2DP);
 
@@ -285,17 +286,11 @@ class Match {
 							maxP = matchP;
 							atomic parent2DP(i,j) = Pair(i-1, j-1);
 						}
-						else {
-							maxP = 0;
-						}
 					} else {
 						if (topGapP > 0) {
 							// topGap is the greatest and is positive
 							maxP = topGapP;
 							atomic parent2DP(i,j) = Pair(i-1, j);
-						}
-						else {
-							maxP = 0;
 						}
 					}
 				} else if (sideGapP > topGapP) {
@@ -304,17 +299,11 @@ class Match {
 						maxP = sideGapP;
 						atomic parent2DP(i,j) = Pair(i as Long, j-1 as Long);
 					}
-					else { 
-						maxP = 0;
-					}
 				} else {
 					if (topGapP > 0) {
 						// topGap is the greatest and is positive
 						maxP = topGapP;
 						atomic parent2DP(i,j) = Pair(i-1, j);
-					}
-					else { 
-						maxP = 0;
 					}
 				}
 				
@@ -367,17 +356,11 @@ class Match {
 							max = match;
 							parent2D(i,j) = Pair(i-1, j-1);
 						}
-						else {
-							max = 0;
-						}
 					} else {
 						if (topGap > 0) {
 							// topGap is the greatest and is positive
 							max = topGap;
 							parent2D(i,j) = Pair(i-1, j);
-						}
-						else {
-							max = 0;
 						}
 					}
 				} else if (sideGap > topGap) {
@@ -386,17 +369,11 @@ class Match {
 						max = sideGap;
 						parent2D(i,j) = Pair(i, j-1);
 					}
-					else { 
-						max = 0;
-					}
 				} else {
 					if (topGap > 0) {
 						// topGap is the greatest and is positive
 						max = topGap;
 						parent2D(i,j) = Pair(i-1, j);
-					}
-					else { 
-						max = 0;
 					}
 				}
 				
