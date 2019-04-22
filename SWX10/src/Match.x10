@@ -293,7 +293,7 @@ class Match {
 					}
 				}
 				
-				atomic globalMaxP = (maxP >= globalMaxP) ? maxP: globalMaxP;
+				atomic globalMaxP = (maxP >= globalMaxP) ? maxP as Long: globalMaxP as Long;
 				
 				max_iP = i;
 				max_jP = j;
