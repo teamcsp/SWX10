@@ -8,6 +8,6 @@ Contains Sequential and Parallel implementation
 Requires X10 to compile and execute:
 - Read http://x10-lang.org/releases/x10-release-262.html
 
-Possible to use Eclipse IDE:
+Possible to use X10 with Eclipse IDE:
 - Install x10 extensions onto plain Eclipse using **update site**
 - See more at http://x10-lang.org/documentation/x10dt-installation.html (X10DT Installation via Eclipse Update Manager)
