@@ -16,6 +16,7 @@ Possible to use X10 with Eclipse IDE:
 
 ## Compile and run
 Quick notes  
+
 Java backend:
 - compile using `x10c Match.x10`
 - run using `x10 Match.x10`
