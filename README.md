@@ -8,8 +8,18 @@ Contains Sequential and Parallel implementation
  
 Requires X10 to compile and execute:
 - Read http://x10-lang.org/releases/x10-release-262.html
-- X10 can be compiled to Java or native executable
+- X10 can be compiled to Java or native (C++) executable
 
 Possible to use X10 with Eclipse IDE:
 - Install x10 extensions onto plain Eclipse using **update site**
 - See more at http://x10-lang.org/documentation/x10dt-installation.html (X10DT Installation via Eclipse Update Manager)
+
+## Compile and run
+Quick notes  
+Java backend:
+- compile using `x10c Match.x10`
+- run using `x10 Match.x10`
+
+C++ backend:
+- compile using `x10c++ -o Match Match.x10`
+- run using `./Match`
